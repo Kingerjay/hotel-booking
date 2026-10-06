@@ -3,53 +3,63 @@ import { Webhook } from "svix";
 
 const clerkWebhooks = async (req, res) => {
     try {
-        const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET)
+        const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
 
         const headers = {
             "svix-id": req.headers["svix-id"],
             "svix-timestamp": req.headers["svix-timestamp"],
-            "svix-signature": req.headers["svix-signature"]
+            "svix-signature": req.headers["svix-signature"],
         };
 
-        // Verify headers
-        await whook.verify(JSON.stringify(req.body), headers);
+        // Verify the raw webhook body
+        const payload = await whook.verify(req.body, headers);
 
-        // Getting data from request body
-        const { type, data } = req.body;
+        // Get data from verified payload
+        const { type, data } = payload;
+
+        console.log("Clerk webhook received:", type);
 
         const userData = {
             _id: data.id,
-            username: data.first_name + " " + data.last_name,
+            username: `${data.first_name || ""} ${data.last_name || ""}`.trim(),
             email: data.email_addresses[0].email_address,
             image: data.image_url,
-        }
+        };
 
-        // Switch case to handle different webhook events
         switch (type) {
-            case "user.created":{
+            case "user.created":
                 await User.create(userData);
+                console.log("User created in MongoDB:", data.id);
                 break;
-            }
 
-            case "user.updated":{
+            case "user.updated":
                 await User.findByIdAndUpdate(data.id, userData);
+                console.log("User updated in MongoDB:", data.id);
                 break;
-            }
 
-            case "user.deleted":{
+            case "user.deleted":
                 await User.findByIdAndDelete(data.id);
+                console.log("User deleted from MongoDB:", data.id);
                 break;
-            }               
 
-                default:
-                    break;
+            default:
+                console.log("Unhandled webhook event:", type);
+                break;
         }
-        res.json({ success: true, message: "Webhook processed successfully" });
+
+        res.status(200).json({
+            success: true,
+            message: "Webhook processed successfully",
+        });
 
     } catch (error) {
         console.error("Error processing webhook:", error);
-        res.json({ success: false, message: "Error processing webhook" });
+
+        res.status(400).json({
+            success: false,
+            message: "Error processing webhook",
+        });
     }
-}
+};
 
 export default clerkWebhooks;
