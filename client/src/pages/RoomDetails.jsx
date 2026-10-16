@@ -46,6 +46,7 @@ const checkAvailability = async ()=>{
 const onSubmitHandler = async (e)=>{
     try {
         e.preventDefault();
+        
         if(!isAvailable){
             return checkAvailability();
         }else{
