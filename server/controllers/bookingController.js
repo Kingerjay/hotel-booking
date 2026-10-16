@@ -77,7 +77,7 @@ export const createBooking = async (req, res) => {
 
         // Corrected spelling to 'req.user.email'
         const mailOptions = {
-            from: process.env.SENDER_EMAIL,
+            from: `"QuickerStay" <${process.env.SENDER_EMAIL}>`,
             to: req.user.email, 
             subject: 'Hotel Booking Details',
             html: `
