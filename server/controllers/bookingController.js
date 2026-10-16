@@ -79,7 +79,7 @@ export const createBooking = async (req, res) => {
         const mailOptions = {
             from: `"QuickerStay" <${process.env.SENDER_EMAIL}>`,
             to: req.user.email, 
-            subject: 'Hotel Booking Details',
+            subject: 'Hotel Booking Details - QuickerStay',
             html: `
             <h2>Your Booking Details</h2>
             <p>Dear ${req.user.username},</p>
