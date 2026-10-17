@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { assets } from '../assets/assets';
-import { useClerk, UserButton } from '@clerk/clerk-react';
+import { useClerk, UserButton, useUser } from '@clerk/clerk-react'; // ✅ FIXED: Added useUser here
 import { useAppContext } from '../conext/AppContext';
 
 const BookIcon = () => (
-    <svg className="w-4 h-4 text-gray-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" >
+    <svg className="w-4 h-4 text-gray-700" aria-hidden="true" xmlns="http://w3.org" width="24" height="24" fill="none" viewBox="0 0 24 24" >
     <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 19V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v13H7a2 2 0 0 0-2 2Zm0 0a2 2 0 0 0 2 2h12M9 3v14m7 0v4" />
 </svg>
 )
@@ -21,13 +21,16 @@ const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    const {openSignIn} = useClerk();
-    const location =useLocation();
+    const { openSignIn } = useClerk();
+    const location = useLocation();
 
-    const {user, navigate, isOwner, setShowHotelReg} = useAppContext();
+    // ✅ FIXED: Read user authentication state directly from Clerk's live hook
+    const { user } = useUser(); 
+    
+    // Remove 'user' from this destructuring array below:
+    const { navigate, isOwner, setShowHotelReg } = useAppContext();
 
     useEffect(() => {
-
         if (location.pathname !== '/') {
             setIsScrolled(true);
             return;
@@ -35,7 +38,6 @@ const Navbar = () => {
             setIsScrolled(false)
         }
         setIsScrolled(prev => location.pathname !== '/' ? true : prev);
-
 
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 10);
@@ -97,8 +99,6 @@ const Navbar = () => {
                         Login
                     </button>
                     )}
-                    
-
                 </div>
 
                 {/* Mobile Menu Button */}
@@ -134,7 +134,6 @@ const Navbar = () => {
                     {isOwner ? 'Dashboard' : 'List Your Hotel'}
                     </button>}
 
-                    
                     {!user && <button 
                     onClick={openSignIn}
                     className="bg-black text-white px-8 py-2.5 rounded-full transition-all duration-500">
@@ -142,8 +141,7 @@ const Navbar = () => {
                     </button>}
                 </div>
             </nav>
-        
     );
 }
 
-export default Navbar
+export default Navbar;
