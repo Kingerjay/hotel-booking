@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { assets } from '../assets/assets';
-import { useClerk, UserButton, useUser } from '@clerk/clerk-react'; // ✅ FIXED: Added useUser here
+import { useClerk, UserButton, useUser } from '@clerk/clerk-react';
 import { useAppContext } from '../conext/AppContext';
 
 const BookIcon = () => (
@@ -24,7 +24,7 @@ const Navbar = () => {
     const { openSignIn } = useClerk();
     const location = useLocation();
 
-    // ✅ FIXED: Read user authentication state directly from Clerk's live hook
+    // Read user authentication state directly from Clerk's live hook
     const { user } = useUser(); 
     
     // Remove 'user' from this destructuring array below:
