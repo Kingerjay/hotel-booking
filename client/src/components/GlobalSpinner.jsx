@@ -24,7 +24,7 @@ const GlobalSpinner = () => {
 
     return (
         <div className="fixed inset-0 bg-black/40 z-50 flex flex-col items-center justify-center backdrop-blur-sm transition-all duration-300">
-            <div className="animate-spin rounded-full h-24 w-24 border-4 border-gray-300 border-t-primary"></div>
+            <div className="animate-spin rounded-full h-24 w-24 border-6 border-gray-300 border-t-primary"></div>
             
         </div>
     );
