@@ -10,6 +10,7 @@ import connectCloudinary from "./configs/cloudinary.js";
 import roomRouter from "./routes/roomRoutes.js";
 import bookingRouter from "./routes/bookingRoutes.js";
 import { stripeWebhooks } from "./controllers/stripeWebhooks.js";
+import Room from "./models/Room.js";
 
 
 connectDB();
@@ -38,3 +39,19 @@ app.use('/api/bookings', bookingRouter)
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, ()=> console.log(`Server running on port ${PORT}`));
+
+
+// Cron-Job to Keep the Backend ALive
+app.get('/api/ping', async (req, res) => {
+    try {
+        await Room.findOne(); 
+        
+        res.status(200).json({ 
+            success: true, 
+            message: "Database and authentication server are fully operational." 
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+

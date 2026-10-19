@@ -14,6 +14,9 @@ import ListRoom from './pages/hotelOwner/ListRoom';
 import {Toaster} from 'react-hot-toast'
 import { useAppContext } from './conext/AppContext';
 import Loader from './components/Loader';
+import GlobalSpinner from './components/GlobalSpinner';
+import Experience from './pages/Experience';
+import About from './pages/About';
 
 const App = () => {
 
@@ -23,6 +26,8 @@ const App = () => {
   return (
     <div>
       <Toaster />
+      <GlobalSpinner />
+
         {!isOwnerPath && <Navbar />}
         {showHotelReg && <HotelReg />}
         <div className='min-h-[70vh]'>
@@ -32,6 +37,9 @@ const App = () => {
             <Route path='/rooms/:id' element={<RoomDetails />} />
             <Route path='/my-bookings' element={<MyBookings />} />
             <Route path='/loader/:nextUrl' element={<Loader />} />
+
+            <Route path='/experience' element={<Experience />} />
+            <Route path='/about' element={<About />} />
 
             <Route path='/owner' element={<Layout />}>
                 <Route index element={<Dashboard />}/>

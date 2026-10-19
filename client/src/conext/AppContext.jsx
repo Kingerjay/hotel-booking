@@ -21,6 +21,40 @@ export const AppProvider = ({ children }) => {
     const [searchedCities, setSearchedCities] = useState([])
     const [rooms, setRooms] = useState([])
 
+    const [apiLoading, setApiLoading] = useState(false);
+
+useEffect(() => {
+    const requestInterceptor = axios.interceptors.request.use(
+        (config) => {
+            setApiLoading(true); 
+            return config;
+        },
+        (error) => {
+            setApiLoading(false);
+            return Promise.reject(error);
+        }
+    );
+
+    // 3. Response Interceptor: Deactivates when ANY API request completes or crashes
+    const responseInterceptor = axios.interceptors.response.use(
+        (response) => {
+            setApiLoading(false); 
+            return response;
+        },
+        (error) => {
+            setApiLoading(false); 
+            return Promise.reject(error);
+        }
+    );
+
+    // Clean up connections on unmount to save performance memory
+    return () => {
+        axios.interceptors.request.eject(requestInterceptor);
+        axios.interceptors.response.eject(responseInterceptor);
+    };
+}, []);
+
+
     const fetchRooms = async () => {
         try {
             const { data } = await axios.get('/api/rooms')
@@ -71,7 +105,7 @@ export const AppProvider = ({ children }) => {
     }, [])
 
     const value = {
-        currency, navigate, user, getToken, isOwner, setIsOwner, axios, showHotelReg, setShowHotelReg, searchedCities, setSearchedCities, rooms, setRooms
+        currency, navigate, user, getToken, isOwner, setIsOwner, axios, showHotelReg, setShowHotelReg, searchedCities, setSearchedCities, rooms, setRooms, apiLoading
     }
 
     return (

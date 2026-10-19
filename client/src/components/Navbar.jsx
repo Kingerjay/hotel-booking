@@ -14,8 +14,8 @@ const Navbar = () => {
     const navLinks = [
         { name: 'Home', path: '/' },
         { name: 'Hotels', path: '/rooms' },
-        { name: 'Experience', path: '/' },
-        { name: 'About', path: '/' },
+        { name: 'Experience', path: '/experience' },
+        { name: 'About', path: '/about' },
     ];
 
     const [isScrolled, setIsScrolled] = useState(false);
@@ -27,7 +27,6 @@ const Navbar = () => {
     // Read user authentication state directly from Clerk's live hook
     const { user } = useUser(); 
     
-    // Remove 'user' from this destructuring array below:
     const { navigate, isOwner, setShowHotelReg } = useAppContext();
 
     useEffect(() => {
@@ -53,7 +52,7 @@ const Navbar = () => {
                 <Link to="/">                   
                     <img src={assets.logo}
                     alt="logo" 
-                    className={`h-9 ${isScrolled && "invert opacity-80"}`}/>                    
+                    className={`h-15 ${isScrolled && "invert opacity-80"}`}/>                    
                 </Link>
 
                 {/* Desktop Nav */}
